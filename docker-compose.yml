@@ -1,0 +1,34 @@
+services:
+  tarantool:
+    image: tarantool/tarantool:latest
+    ports:
+      - "3301:3301"
+    volumes:
+      - ./init.lua:/opt/tarantool/init.lua
+      - ./tarantool.yaml:/etc/tarantool/tarantool.yaml
+    command: tarantool /opt/tarantool/init.lua
+    environment:
+      - TARANTOOL_CONFIG=/etc/tarantool/tarantool.yaml
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "tarantool", "-e", "os.exit(0)" ]
+      interval: 2s
+      timeout: 5s
+      retries: 50
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - TARANTOOL_ADDR=tarantool:3301
+    depends_on:
+      tarantool:
+        condition: service_healthy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

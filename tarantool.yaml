@@ -1,0 +1,20 @@
+credentials:
+  users:
+    storage:
+      password: 'passw0rd'
+      privileges:
+      - permissions: [ read, write ]
+        spaces: [ kv ]
+
+groups:
+  group001:
+    replicasets:
+      replicaset001:
+        instances:
+          instance001:
+            iproto:
+              listen:
+              - uri: '0.0.0.0:3301'
+
+app:
+  file: 'init.lua'
