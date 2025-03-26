@@ -41,11 +41,12 @@ func (r *TarantoolRepo) Create(kv *models.KeyValue) (*models.KeyValue, error) {
 			)
 			return nil, fmt.Errorf("key already exists")
 		}
+
 		r.log.Error("Ошибка создания записи",
 			zap.String("key", kv.Key),
 			zap.Error(err),
 		)
-		return nil, err
+		return nil, fmt.Errorf("key already exists")
 	}
 
 	tuple := resp[0].([]interface{})
